@@ -1,0 +1,30 @@
+{
+  "resource": [
+    {
+      "aws_api_gateway_rest_api": [
+        {
+          "apig": [
+            {
+              "name": "apig",
+              "description": "The serverless API using AWS API Gateway",
+              "endpoint_configuration": {
+                "types": ["REGIONAL"]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "module": [
+    {
+      "prod-auth": [
+        {
+          "source": "./stages/prod",
+          "api": "${aws_api_gateway_rest_api.apig}",
+          "cognito-user-pool-arn": "arn:aws:cognito-idp:us-east-2:XXXXXXXXXXXX:userpool/us-east-2_XXXXXXXXX"
+        }
+      ]
+    }
+  ]
+}

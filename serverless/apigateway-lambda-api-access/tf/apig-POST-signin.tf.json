@@ -1,0 +1,17 @@
+{
+  "module": [
+    {
+      "lambda": [
+        {
+          "source": "./lambda",
+          "function_name": "apig-post-signin",
+          "handler": "apig_post_signin.core",
+          "zip_file": "apig-post-signin-0.1.0-SNAPSHOT-standalone.jar",
+          "runtime": "java11",
+          "policy_description": "ALambdaForAPIGPOSTSignIn"
+        }
+      ]
+    }
+  ]
+}
+

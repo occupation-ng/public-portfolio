@@ -1,0 +1,49 @@
+{
+  "variable": [
+    {
+      "api": [
+        {
+          "description": "Generated API Id",
+          "default": "Provided by post-signup Module in ../authorizer.tf.json"
+        }
+      ]
+    },
+    {
+      "authorizer-id": [
+        {
+          "description": "Cognito User Pool Authorizer Id",
+          "default": "Provided by post-signup Module in ../authorizer.tf.json"
+        }
+      ]
+    }
+  ],
+  "resource": [
+    {
+      "aws_api_gateway_resource": [
+        {
+          "signup": [
+            {
+              "rest_api_id": "${var.api.id}",
+              "parent_id": "${var.api.root_resource_id}",
+              "path_part": "signup"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "aws_api_gateway_method": [
+        {
+          "post-signup": [
+            {
+              "authorization": "NONE",
+              "http_method": "POST",
+              "resource_id": "${aws_api_gateway_resource.signup.id}",
+              "rest_api_id": "${var.api.id}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

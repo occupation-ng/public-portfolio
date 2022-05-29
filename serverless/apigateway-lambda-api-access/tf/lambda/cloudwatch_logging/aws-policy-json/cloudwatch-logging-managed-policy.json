@@ -1,0 +1,18 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowLambdaToLogActivity",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:*",
+                  "arn:aws:logs:<REGION>:<ACCOUNT_ID>:log-group:<LOG_GROUP_NAME>",
+                  "arn:aws:logs:<REGION>:<ACCOUNT_ID>:log-group:<LOG_GROUP_NAME>:log-stream:<LOG_STREAM_NAME>",
+                  "arn:aws:logs:<REGION>:<ACCOUNT_ID>:destination:<DESTINATION_NAME>",
+      "Effect": "Allow"
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "variable": [
+    {
+      "function_name": [
+        {
+          "description": "Descriptor for the Lambda Function"
+        }
+      ]
+    },
+    {
+      "handler": [
+        {
+          "description": "<CLJ-NS>::<-handle*-FUNC-NAME>"
+        }
+      ]
+    },
+    {
+      "runtime": [
+        {
+          "description": "<RUNTIME>java8"
+        }
+      ]
+    },
+    {
+      "zip_file": [
+        {
+          "description": "${fileb://./target/<JAR-FILE>-0.1.0-standalone.jar}"
+        }
+      ]
+    },
+    {
+      "policy_description": [
+        {
+          "description": "STR : Policy Sid : ALPLambdaFor",
+          "default": "LAMBDA_UNIDENTIFIED_ROLE_POLICY"
+        }
+      ]
+    },
+    {
+      "policy_name": [
+        {
+          "description": "Name of the policy attached to the role controling the lambda's permissions",
+          "default": "LAMBDA_UNIDENTIFIED_ROLE_policy"
+        }
+      ]
+    },
+    {
+      "role_name": [
+        {
+          "description": "Name of the role controling the lambda's permissions",
+          "default": "LAMBDA_UNIDENTIFIED_role"
+        }
+      ]
+    }
+  ],
+  "resource": [
+    {
+      "aws_lambda_function": [
+        {
+          "lambda": [
+            {
+              "function_name": "${var.function_name}",
+              "s3_bucket": "static-test",
+              "s3_key": "${var.zip_file}", 
+              "handler": "${var.handler}",
+              "runtime": "${var.runtime}",
+              "memory_size": 512,
+              "timeout": 10,
+              "role": "${module.role.arn}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "aws_lambda_permission": [
+        {
+          "lambda_permission": [
+            {
+              "statement_id": "AllowAPIInvoke",
+              "action": "lambda:InvokeFunction",
+              "function_name": "${var.function_name}",
+              "principal": "apigateway.amazonaws.com",
+              "source_arn": "arn:aws:execute-api:us-east-2:XXXXXXXXXXXX:*/*/*/*",
+              "depends_on": ["aws_lambda_function.lambda"]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "module": [
+    {
+      "role": [
+        {
+          "source": "./role",
+          "role_name": "LAMBDA-${var.function_name}",
+          "policy_name": "LAMBDA-${var.function_name}",
+          "policy_description": "${var.policy_description}"
+        }
+      ]
+    },
+    {
+      "cloudwatch_logging": [
+        {
+          "source": "./cloudwatch_logging",
+          "log_name": "${var.function_name}-logs", 
+          "log_retention": 1
+        }
+      ]
+    }
+  ]
+}

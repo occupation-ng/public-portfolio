@@ -1,0 +1,32 @@
+{
+  "variable": [
+    {
+      "log_name": [
+        {
+          "description": "STR : Name for the CloudWatch Log: /aws/<SERVICE>/<RESOURCE>"
+        }
+      ]
+    },
+    {
+      "log_retention": [
+        {
+          "description": "INT : Determines how long to keep the logs, BILLING considerations apply"
+        }
+      ]
+    }
+  ],
+  "resource": [
+    {
+      "aws_cloudwatch_log_group": [
+        {
+          "cloudwatch-logging-group": [
+            {
+              "name": "${var.log_name}",
+              "retention_in_days": "${var.log_retention}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

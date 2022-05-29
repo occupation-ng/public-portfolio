@@ -1,0 +1,39 @@
+{
+  "variable": [
+    {
+      "api": [
+        {
+          "description": "Generated API",
+          "default": "Provided by stages Module in ../apig.tf.json"
+        }
+      ]
+    }
+  ],
+  "resource": [
+    {
+      "aws_api_gateway_stage": [
+        {
+          "prod": [
+            {
+              "deployment_id": "${aws_api_gateway_deployment.prod.id}",
+              "rest_api_id": "${var.api.id}",
+              "stage_name": "prod"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "aws_api_gateway_deployment": [
+        {
+          "prod": [
+            {
+              "rest_api_id": "${var.api.id}",
+              "stage_name": "prod"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

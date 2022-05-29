@@ -1,0 +1,235 @@
+﻿GCP CLI GoLang
+Last updated 20220515
+https://cloud.google.com/sdk/gcloud
+Tools to Create and Manage Google Cloud Resources
+CLI & API Auth
+When One is Authenticated and the Other Unathenticated
+Unathenticated gcloud remains unathenticated when authenticating either API via golang.
+Unauthenticated golang API remains unathenticated when gcloud is authenticated.
+Application Default Credentials (ADC)
+$ export GOOGLE_APPLICATION_CREDENTIALS="/home/user/Downloads/SERVICE_ACCOUNT.json"
+Unauthenticated gcloud remains unathenticated when using  ADC Environment Variables.
+$ export GOOGLE_APPLICATION_CREDENTIALS="/home/user/Downloads/SERVICE_ACCOUNT.json"
+$ gcloud auth list
+No credentialed accounts.
+$ gcloud iam roles list --limit 1
+ERROR: (gcloud.iam.roles.list) You do not currently have an active account selected.
+Unauthenticated cloud.google.com/go API remains unauthenticated when using ACD Environment Variables.
+ctx := context.Background()
+service, err := iam.NewService(ctx)
+Unauthenticated google.golang.org/api API using ACD can be athenticated with manually set Environment Variables.
+c, err := admin.NewIamClient(ctx)
+gcloud Authenticated Examples
+	After authenticating gcloud with a Service Account:
+$ $ gcloud auth list
+No credentialed accounts.
+$ gcloud iam roles list –limit 1
+ERROR: (gcloud.iam.roles.list) You do not currently have an active account selected.
+$ gcloud auth activate-service-account <ACCOUNT> --key-file=/PATH/TO/SERVICE_ACCOUNT.json --project <PROJECT>
+$ gcloud auth list
+                    Credentialed Accounts
+ACTIVE  ACCOUNT
+*       gcpv-sa-test@gcp-vault-sa-test.iam.gserviceaccount.com
+
+To set the active account, run:
+    $ gcloud config set account `ACCOUNT`
+$ gcloud iam roles list --limit 1
+---
+description: Ability to view or act on access approval requests and view configuration
+etag: AA==
+name: roles/accessapproval.approver
+stage: BETA
+title: Access Approval Approver
+	google.golang.org/api unable to use the active credentials:
+import (
+context
+iam "google.golang.org/api/iam/v1"
+)
+func listRoles(projectId string, profile string) ([]*iam.Role, error) {
+  ctx := context.Background()
+  service, err := iam.NewService(ctx)
+  project = ...
+  response, err := service.Organizations.Roles.List(“projects/”+projectId).Do()
+...
+//unable to authenticate with active gcloud auth credentials
+// ERR: iam.NewService: google: could not find default credentials. See https://developers.google.com/accounts/docs/application-default-credentials for more information.
+	cloud.google.com/go/* is unable to use the active credentials:
+import (
+admin "cloud.google.com/go/iam/admin/apiv1"
+  adminpb "google.golang.org/genproto/googleapis/iam/admin/v1"
+  "encoding/json"
+)
+...
+func listRoles(projectID string, profile string) {
+  ctx := context.Background()
+  c, err := admin.NewIamClient(ctx)
+  req := &adminpb.ListRolesRequest{}
+resp, err := c.ListRoles(ctx, req)
+...
+//unable to authenticate with active gcloud auth credentials
+//ERR: panic: runtime error: invalid memory address or nil pointer dereference
+[signal SIGSEGV: segmentation violation code=0x1 addr=0x28 pc=0x8fbf4f]
+Permission Access
+Browser > Viewer > Editor > Owner
+google.golang.org/api/*
+    • List forbidden with Browser perms
+    • List permitted with Viewer+ perms
+cloud.google.com/go/*
+    • List permitted with Browser+ perms
+
+Navigating the Docs
+google.golang.org/api/
+https://godoc.org/google.golang.org/api/iam/v1#Service
+type Service 
+type Service struct {
+    BasePath  string // API endpoint base URL
+    UserAgent string // optional additional User-Agent fragment
+    IamPolicies *IamPoliciesService
+    Organizations *OrganizationsService
+    Permissions *PermissionsService
+    Projects *ProjectsService
+    Roles *RolesService
+    // contains filtered or unexported fields  }
+BASEPATH: https://iam.googleapis.com/
+UA:  // empty by default
+  service.UserAgent = "hazzah"
+  fmt.Println("UA:",service.UserAgent)
+// UA: hazzah
+https://godoc.org/google.golang.org/api/iam/v1#OrganizationsService
+type OrganizationsService 
+type OrganizationsService struct {
+    Roles *OrganizationsRolesService
+    // contains filtered or unexported fields  }
+
+
+https://godoc.org/google.golang.org/api/iam/v1#OrganizationsRolesService 
+scroll to:
+func (*OrganizationsRolesService) List 
+func (r *OrganizationsRolesService) List(parent string) *OrganizationsRolesListCall
+List: Lists every predefined Role that IAM supports, or every custom role that is defined for an organization or project. 
+https://godoc.org/google.golang.org/api/iam/v1#RolesListCall.Parent
+func (*RolesListCall) Parent 
+func (c *RolesListCall) Parent(parent string) *RolesListCall
+Parent sets the optional parameter "parent": The `parent` parameter's value depends on the target resource for the request, namely [`roles`](/iam/reference/rest/v1/roles), [`projects`](/iam/refe rence/rest/v1/projects.roles), or [`organizations`](/iam/reference/rest/v1/organizations.roles). Each resource type's `parent` value format is described below: 
+* [`roles.list()`](/iam/reference/rest/v1/roles/list): An empty string. 
+This method doesn't require a resource; it simply returns all
+[predefined roles](/iam/docs/understanding-roles#predefined_roles)
+in 
+Cloud IAM. Example request URL:
+`https://iam.googleapis.com/v1/roles`
+ response, err := service.Organizations.Roles.List("").Do()
+//[] Projects.Roles.List: googleapi: got HTTP response code 404 with body: <!DOCTYPE html>
+
+* [`projects.roles.list()`](/iam/reference/rest/v1/projects.roles/list): 
+`projects/{PROJECT_ID}`. This method lists all project-level
+[custom roles](/iam/docs/understanding-custom-roles).
+Example request URL:
+`https://iam.googleapis.com/v1/projects/{PROJECT_ID}/roles`
+response, err := service.Projects.Roles.List("projects/" + projectID).Do()
+// <nil>        when project is without any roles
+* [`organizations.roles.list()`](/iam/reference/rest/v1/organizations.ro les/list): 
+`organizations/{ORGANIZATION_ID}`. This method lists all
+organization-level [custom
+roles](/iam/docs/understanding-custom-roles). 
+Example request URL:
+`https://iam.googleapis.com/v1/organizations/{ORGANIZATION_ID}/roles` 
+Note: Wildcard (*) values are invalid; you must specify a complete project ID or organization ID. 
+
+https://godoc.org/google.golang.org/api/iam/v1#ListRolesResponse
+cloud.google.com/go/
+https://godoc.org/cloud.google.com/go
+https://godoc.org/cloud.google.com/go/iam/admin/apiv1
+type IamClient 
+type IamClient struct {
+
+    // The call options for this service.
+    CallOptions *IamCallOptions
+    // contains filtered or unexported fields
+}
+IamClient is a client for interacting with Google Identity and Access Management (IAM) API. 
+Methods, except Close, may be called concurrently. However, fields must not be modified concurrently with method calls. 
+func NewIamClient 
+func NewIamClient(ctx context.Context, opts ...option.ClientOption) (*IamClient, error)
+NewIamClient creates a new iam client. 
+Creates and manages service account objects. 
+Service account is an account that belongs to your project instead of to an individual end user. It is used to authenticate calls to a Google API. 
+To create a service account, specify the project_id and account_id for the account. The account_id is unique within the project, and used to generate the service account email address and a stable unique_id. 
+All other methods can identify accounts using the format projects/{PROJECT_ID}/serviceAccounts/{SERVICE_ACCOUNT_EMAIL}. Using - as a wildcard for the project will infer the project from the account. The account value can be the email address or the unique_id of the service account. 
+https://godoc.org/cloud.google.com/go/iam/admin/apiv1#IamClient.ListRoles
+func (*IamClient) ListRoles
+func (c *IamClient) ListRoles(ctx context.Context, req *adminpb.ListRolesRequest, opts ...gax.CallOption) (*adminpb.ListRolesResponse, error)
+ListRoles lists the Roles defined on a resource.
+Example
+Code:
+ctx := context.Background()
+c, err := admin.NewIamClient(ctx)
+if err != nil {
+    // TODO: Handle error.
+}
+req := &adminpb.ListRolesRequest{
+    // TODO: Fill request struct fields.
+}
+resp, err := c.ListRoles(ctx, req)
+if err != nil {
+    // TODO: Handle error.  
+}
+// TODO: Use resp.
+_ = resp
+
+https://godoc.org/google.golang.org/genproto/googleapis/iam/admin/v1#ListRolesRequest
+type ListRolesRequest 
+type ListRolesRequest struct {
+    // The `parent` parameter's value depends on the target resource for the
+    // request, namely
+    // [`roles`](/iam/reference/rest/v1/roles),
+    // [`projects`](/iam/reference/rest/v1/projects.roles), or
+    // [`organizations`](/iam/reference/rest/v1/organizations.roles). Each
+    // resource type's `parent` value format is described below:
+    //
+req := &adminpb.ListRolesRequest{PageSize: 2}
+or
+req := &adminpb.ListRolesRequest{}
+req.PageSize=1
+
+
+cloud.google.com/go
+// import
+// option "google.golang.org/api/option"
+// admin "cloud.google.com/go/iam/admin/apiv1"
+// adminpb "google.golang.org/genproto/googleapis/iam/admin/v1"
+func cloudgo_listRoles(projectId string, profile string) (resp *adminpb.ListRolesResponse) {
+  ctx := context.Background()
+  secret, err := json.Marshal(json_to_mapss(getCreds(profile)))
+  c, err := admin.NewIamClient(ctx, option.WithCredentialsJSON(secret))
+if err != nil {
+    // TODO: Handle error.
+}
+req := &adminpb.ListRolesRequest{}
+// https://godoc.org/google.golang.org/genproto/googleapis/iam/admin/v1#ListRolesRequest
+req.PageSize=1
+resp, err = c.ListRoles(ctx, req)
+if err != nil {
+  fmt.Println("ERR:",err)
+  // TODO: Handle error.
+}
+return resp}
+google.golang.org/api
+// import
+// "context"
+// iam "google.golang.org/api/iam/v1"
+func gapi_listRoles(projectId string, profile string) ([]*iam.Role, error) {
+  ctx := context.Background()
+  secret, err := json.Marshal(json_to_mapss(getCreds(profile)))
+  service, err := iam.NewService(ctx, option.WithCredentialsJSON(secret))
+  if err != nil {
+    return nil, fmt.Errorf("iam.NewService: %v", err)
+  }
+  response, err := service.Organizations.Roles.List("projects/"+projectId).Do()
+  if err != nil {
+    return nil, fmt.Errorf("Projects.Roles.List: %v", err)
+  }
+  for _, role := range response.Roles {
+    fmt.Printf("Listing role: %v\n", role.Name)
+  }
+  return response.Roles, nil
+}

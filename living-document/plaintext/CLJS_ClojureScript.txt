@@ -1,0 +1,152 @@
+﻿ClojureScript
+Last updated 20220515
+https://clojurescript.org/
+Clojure Compiled to Javascript
+shadow-cljs
+Install nodejs
+
+	Download Current: https://nodejs.org/en/ 
+	Follow the installation instructions:
+https://github.com/nodejs/help/wiki/Installation#how-to-install-nodejs-via-binary-archive-on-linux
+
+$ npm init    
+	Walks through creating a package.json
+	Select all Defaults
+
+package.json
+Defaults
+{
+  "name": "cljs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/___/cljs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://bitbucket.org/___/cljs/issues"
+  },
+  "homepage": "https://bitbucket.org/___/cljs#readme"
+}
+
+“scripts” 
+	defines a small script that you can run with a name
+	
+Global Installation
+$ npm install -g shadow—cljs
+Local Installation
+$ npm install –save-dev shadow-cljs
+	--save-dev  
+$ man npm
+	…  `-D, --save-dev`: Package will appear in your `devDependencies`.   … 
+	devDependencies local copies of libraries used, those libraries are stored in project.json
+	node-modules : node modules directory has all dependency code
+	package-lock.json :  describes the specific version numbers in node-modules, for reproducibility
+
+NOTE example .gitignore file for shadow-cljs
+*~
+*#
+*.swp
+1
+.login
+*tmp*
+*node_modules*          # local source copies of devDependencies
+*.shadow-cljs*          # used for shadow-cljs’ own purposes
+*public/compiledjs/*    # compiled artifacts
+INIT Project
+
+$ npx shadow-cljs init   # npx : npm execute a local devDependancy
+
+shadow-cljs.edn where shadow stores build parameters for compiling clojurescript
+
+$ mkdir src
+$ mkdir main
+$ mkdir <PROJECT_NAME>
+$ <EDITOR> src/main/<PROJECT_NAME>/main.cljs
+(ns cljs.main)
+(defn -main [] (println "hazzah"))          ;; init function
+(defn -reload [] (println "..reloaded"))     ;; DEV reload function
+
+NOTE (println ):clojure :: console.log():javascript
+
+$ <EDITOR> shadow-cljs.edn
+;; shadow-cljs configuration
+{:source-paths
+ ["src/dev"
+  "src/main"
+  "src/test"]
+:dependencies
+ []
+:dev-http {1717 "public/"}  ;; start a server, serve directory, here “public/”
+:builds
+  {:app {:output-dir "public/compiledjs/"   ;; needs its own directory
+	 :asset-path "compiledjs"           ;; relative directory
+	 :target :browser                   ;; many targets, here ‘browser’
+	 :modules {:main {:init-fn cljs.main/-main}}  ;; run init function
+	 :devtools {:after-load cljs.main/-reload}}}}  ;; run when dev reloads
+
+$ <EDITOR> public/index.html
+<body>
+  <script src="compiledjs/main.js"></script>
+
+DEV Live Reloading
+
+	$ npx shadow-cljs watch app   # start the DEV reloader
+… shadow-cljs – HTTP server available at http://localhost:1717
+[:app] Build completed. … 
+
+	Put server address into the browser.
+	Now when the source files are changed the browser is automatically reloaded
+
+NOTE naming a project  “cljs”, ie (ns cljs.main), causes breaking issues
+
+
+Project Dependencies
+For Clojure dependencies add to:
+ shadow-cljs.edn  in :dependencies
+{..
+	:dependencies [
+		LIB.NAME.SPACE “0.1.7”]
+..}
+and 
+/src/main/PROJECT/main.cljs in :require
+	(ns PROJECT.main
+		(:require [PROJECT.LIB-NAME-SPACE :as SUB]))
+
+
+figwheel
+$ lein new figwheel-main <PROJECT_NAME>
+run the live reloader
+$ lein fig:build
+Local JS
+Shadow cljs
+(ns demo.app
+  (:require
+    ["/some-library/components/foo" :as foo]
+    ["./bar" :as bar :refer (myComponent)]))
+https://shadow-cljs.github.io/docs/UsersGuide.html#_requiring_js
+Deploy
+<!DOCTYPE html>
+<html lang=”en”>
+<head>
+<title>PROJECT TITLE</title>
+<meta name=”viewport” content=”width=device=width, initial-scale=1”> <!-- for mobile></-->
+</head>
+Add Deploy Command
+Into package.json
+“scripts”: {
+	“build” : “shadow-cljs release –verbose app”
+}
+Can run the command ad hoc
+$ npx shadow-cljs realease app
+<long compilation time>
+JS to CLJS Examples
+var el=document.getElementById(“SOME-ID”)
+(let [el (.getElementById js/document “SOME-ID”)] )
+
