@@ -4,6 +4,7 @@
 // Globals
 //err ?? const STUN_SERVERS = ["stun:stun.l.google.com:19302","stun:stun.services.mozilla.com:3478"]  //multi server LIST[STR,STR,..]
 const STUN_SERVERS = "stun:stun.l.google.com:19302" // or single server STR
+//const STUN_SERVERS = "stun:stun2.l.google.com:19302" // or single server STR
 //const STUN_SERVERS = "stun:stun.services.mozilla.com:3478"
 var GLOB_user_id = "anonymous"
 var channels = []

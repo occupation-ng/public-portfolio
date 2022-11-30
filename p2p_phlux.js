@@ -3,8 +3,8 @@
 
 // user input
 //   tell the browser we want it to report to a specified function when certain mouse events happen
-document.body.addEventListener("mousedown", HandleMouseDown); // mouse event: mousedown  ;   function: HandleMouseDown()
-document.body.addEventListener("mousemove", HandleMouseMove); // mouse event: mousemove  ;   function: HandleMouseMove()
+//document.body.addEventListener("mousedown", HandleMouseDown); // mouse event: mousedown  ;   function: HandleMouseDown()
+//document.body.addEventListener("mousemove", HandleMouseMove); // mouse event: mousemove  ;   function: HandleMouseMove()
 //document.body.addEventListener("mouseup", HandleMouseUp);            // mouse event: mouseup    ;   function: HandleMouseUp()
 
 
@@ -728,7 +728,7 @@ function onit() {
     // play
     play(game_state)
 } // onit() : gets everything started by defining some gamestate
-onit() // i am
+//onit() // i am
 
 
 function peering(game_state) {
