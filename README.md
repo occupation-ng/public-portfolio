@@ -1,25 +1,11 @@
-# Public Portfolio
-A limited public collection of project samples.
+# P2P Chessboard
 
-## bio-informatics  
-Selected Solutions to Rosalind BioInformatics Exercises in Clojure and Python
-
-## chessie  
 A Peer to Peer Digital Chessboard.
 
-## cryptography-exercises  
-Selected Answers and Generators for Exercises from the textbook titled "A Course In Number Theory and Cryptography"
+# Use
+Open the `htm` file in your browswer via `file:///`.
 
-## living-document  
-A limited selection of 'living' documentation for my personal use and experience with various technologies.
+## License
+Copyright 2022, this repository author.
 
-## serverless  
-Example utilising the serveless service APIGateway to allow an API endpoint to call a lambda function and other AWS services.
-
-## vaultesque
-Utility to securely store and use `gcloud` credentials similar to 99design's `aws-vault` using its `keychain` go package.
-
-# License
 See LICENSE file.
-
-
