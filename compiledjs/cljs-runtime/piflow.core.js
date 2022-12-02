@@ -1,14 +1,14 @@
 goog.provide('piflow.core');
 piflow.core.animate = (function piflow$core$animate(var_args){
 var args__5775__auto__ = [];
-var len__5769__auto___43596 = arguments.length;
-var i__5770__auto___43597 = (0);
+var len__5769__auto___44463 = arguments.length;
+var i__5770__auto___44464 = (0);
 while(true){
-if((i__5770__auto___43597 < len__5769__auto___43596)){
-args__5775__auto__.push((arguments[i__5770__auto___43597]));
+if((i__5770__auto___44464 < len__5769__auto___44463)){
+args__5775__auto__.push((arguments[i__5770__auto___44464]));
 
-var G__43598 = (i__5770__auto___43597 + (1));
-i__5770__auto___43597 = G__43598;
+var G__44465 = (i__5770__auto___44464 + (1));
+i__5770__auto___44464 = G__44465;
 continue;
 } else {
 }
@@ -26,11 +26,11 @@ return piflow.dom.update_flux(piflow.util.invoke.cljs$core$IFn$_invoke$arity$var
 (piflow.core.animate.cljs$lang$maxFixedArity = (1));
 
 /** @this {Function} */
-(piflow.core.animate.cljs$lang$applyTo = (function (seq43584){
-var G__43585 = cljs.core.first(seq43584);
-var seq43584__$1 = cljs.core.next(seq43584);
+(piflow.core.animate.cljs$lang$applyTo = (function (seq44453){
+var G__44454 = cljs.core.first(seq44453);
+var seq44453__$1 = cljs.core.next(seq44453);
 var self__5754__auto__ = this;
-return self__5754__auto__.cljs$core$IFn$_invoke$arity$variadic(G__43585,seq43584__$1);
+return self__5754__auto__.cljs$core$IFn$_invoke$arity$variadic(G__44454,seq44453__$1);
 }));
 
 piflow.core.global_close_fn = (function piflow$core$global_close_fn(e){
@@ -53,18 +53,18 @@ piflow.home.remove_lines(parseInt(id_numb));
 return piflow.home.draw_lines(id_numb);
 });
 piflow.core.update_graph = (function piflow$core$update_graph(event,pane_id,pane_graph){
-var vec__43589 = new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [event.pageX,event.pageY,(200)], null);
-var x = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__43589,(0),null);
-var y = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__43589,(1),null);
-var z = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__43589,(2),null);
+var vec__44456 = new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [event.pageX,event.pageY,(200)], null);
+var x = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__44456,(0),null);
+var y = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__44456,(1),null);
+var z = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__44456,(2),null);
 var flow_graph = window.GLOB_flow_graph;
 return (window["GLOB_flow_graph"] = cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(flow_graph,cljs.core.keyword.cljs$core$IFn$_invoke$arity$1(pane_id),cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(pane_graph,new cljs.core.Keyword(null,"pos","pos",-864607220),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [x,y,z], null))));
 });
 piflow.core.global_move_fn = (function piflow$core$global_move_fn(e){
 var pane_id = window.get_match_id(e,"pane");
-var pane_graph = (function (){var G__43594 = window.GLOB_flow_graph;
-var fexpr__43593 = cljs.core.keyword.cljs$core$IFn$_invoke$arity$1(pane_id);
-return (fexpr__43593.cljs$core$IFn$_invoke$arity$1 ? fexpr__43593.cljs$core$IFn$_invoke$arity$1(G__43594) : fexpr__43593.call(null,G__43594));
+var pane_graph = (function (){var G__44461 = window.GLOB_flow_graph;
+var fexpr__44460 = cljs.core.keyword.cljs$core$IFn$_invoke$arity$1(pane_id);
+return (fexpr__44460.cljs$core$IFn$_invoke$arity$1 ? fexpr__44460.cljs$core$IFn$_invoke$arity$1(G__44461) : fexpr__44460.call(null,G__44461));
 })();
 var id_numb = cljs.core.last(clojure.string.split.cljs$core$IFn$_invoke$arity$2(pane_id,"_"));
 if(cljs.core.not(isNaN(cljs.core.last(pane_id)))){
